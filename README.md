@@ -153,16 +153,59 @@ See [`results.md`](results.md) for all test questions, the SQL each strategy pro
 <!-- Fill these in after running run_examples.py -->
 ### A question that worked
 
-**Question:**
+**Question:** What personality type appears the most in cats that have been adopted?        
 **SQL:**
-**Answer:**
+```sql
+SQL (single_domain):
+  SELECT personality, COUNT(*) AS cnt
+  FROM cat
+  WHERE status = 'adopted' AND personality IS NOT NULL
+  GROUP BY personality
+  HAVING COUNT(*) = (
+    SELECT MAX(c)
+    FROM (
+      SELECT COUNT(*) AS c
+      FROM cat
+      WHERE status = 'adopted' AND personality IS NOT NULL
+      GROUP BY personality
+    )
+  );
+```
+**Answer:** "There's a seven-way tie: cuddly, curious, energetic, gentle, independent, playful, and shy each appear most often — each shows up once among adopted cats."        
 
 ### A question that didn't work
 
-**Question:**
-**SQL:**
-**Answer:**
-**Why it failed:**
+**Question:** What month reports the highest adoptions and the highest customer sales?        
+**SQL:** 
+```sql
+WITH adoptions AS (
+    SELECT strftime('%Y-%m', adoption_date) AS month, COUNT(*) AS adoptions
+    FROM adoption
+    GROUP BY month
+  ), sales AS (
+    SELECT strftime('%Y-%m', v.visit_date) AS month,
+           SUM(v.cover_charge + COALESCE(ord.order_revenue, 0)) AS sales
+    FROM visit v
+    LEFT JOIN (
+      SELECT fo.visit_id, SUM(mi.price * oi.quantity) AS order_revenue
+      FROM food_order fo
+      JOIN order_item oi ON oi.order_id = fo.order_id
+      JOIN menu_item mi ON mi.item_id = oi.item_id
+      GROUP BY fo.visit_id
+    ) ord ON ord.visit_id = v.visit_id
+    GROUP BY month
+  ), max_vals AS (
+    SELECT (SELECT MAX(adoptions) FROM adoptions) AS max_adoptions,
+           (SELECT MAX(sales) FROM sales) AS max_sales
+  )
+  SELECT a.month, a.adoptions, s.sales
+  FROM adoptions a
+  JOIN sales s USING(month), max_vals m
+  WHERE a.adoptions = m.max_adoptions
+    AND s.sales = m.max_sales;
+```
+**Answer:** "I couldn't find any month that reports both the highest adoptions and the highest customer sales — the result set was empty. If you want, I can check which month has the most adoptions and which month has the highest sales separately."           
+**Why it failed:** GPT read the 'AND' in the question literally. Though the SQL was technically right, it didn't quite answer what the question originally meant. 
 
 ### Strategy comparison
 
