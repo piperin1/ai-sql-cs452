@@ -2,7 +2,7 @@
 
 Model: `openai:gpt-5-mini` · Run: 2026-10-11 17:24
 
-Each answer is marked correct when the model's query returns the same rows as a hand-written reference query. (Re-graded after fixing the checker: it originally marked combined name columns and pivoted layouts as wrong.)
+Each answer is marked correct when the model's query returns the same rows as a hand-written reference query.
 
 ## Score by strategy
 
