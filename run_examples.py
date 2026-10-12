@@ -38,8 +38,9 @@ QUESTIONS = [
      "JOIN staff s ON f.staff_id = s.staff_id WHERE s.role = 'barista' GROUP BY s.staff_id "
      "ORDER BY COUNT(*) DESC LIMIT 1;"),
     ("Is the average party size bigger on weekends or weekdays?",
-     "SELECT CASE WHEN strftime('%w', visit_date) IN ('0', '6') THEN 'weekend' ELSE 'weekday' END AS day_type, "
-     "AVG(party_size) FROM visit GROUP BY day_type;"),
+     "SELECT CASE WHEN AVG(CASE WHEN strftime('%w', visit_date) IN ('0', '6') THEN party_size END) > "
+     "AVG(CASE WHEN strftime('%w', visit_date) NOT IN ('0', '6') THEN party_size END) "
+     "THEN 'weekend' ELSE 'weekday' END FROM visit;"),
     ("Which customers with the top membership tier have visited more than 25 times?",
      "SELECT cu.first_name, cu.last_name FROM visit v "
      "JOIN customer cu ON v.customer_id = cu.customer_id WHERE cu.membership_tier = 'roar' "
