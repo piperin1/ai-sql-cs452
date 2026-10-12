@@ -2,7 +2,7 @@
 
 Model: `openai:gpt-5-mini` · Run: 2026-10-11 17:24
 
-Each answer is marked correct when the model's query returns the same rows as a hand-written reference query.
+Each answer is marked correct when the model's query returns the same rows as a reference query.
 
 ## Score by strategy
 
