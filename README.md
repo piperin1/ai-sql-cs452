@@ -156,7 +156,6 @@ See [`results.md`](results.md) for all test questions, the SQL each strategy pro
 **Question:** What personality type appears the most in cats that have been adopted?        
 **SQL:**
 ```sql
-SQL (single_domain):
   SELECT personality, COUNT(*) AS cnt
   FROM cat
   WHERE status = 'adopted' AND personality IS NOT NULL
