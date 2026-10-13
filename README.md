@@ -208,8 +208,11 @@ WITH adoptions AS (
 **Why it failed:** GPT read the 'AND' in the question literally. Though the SQL was technically right, it didn't quite answer what the question originally meant. 
 
 ### Strategy comparison
+The strategy didn't have a significant influence for gpt-5-mini. The query style and tie-breaking, however, changed:
+- Zero-shot: often grabbed extra columns, broke ties using `HAVING SUM(...) = MAX(...)`
+- Single-domain: copied the short style of its examples, broke ties using `HAVING SUM(...) = MAX(...)`
+- Cross-domain: wrote shortest queries, copied libraries examples of using `LIMIT 1` and thus silently dropped ties
 
-<!-- Which strategy scored best? Did the examples change how the model wrote queries? -->
 
 ## Files
 
